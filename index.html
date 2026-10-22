@@ -1,12 +1,95 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>T-Shirts</title>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-  
-  
+
+  <h1>T-Shirt Store</h1>
+  <div id="root"></div>
+
+  <script src="t-shirts.js"></script>
+
+  <script type="text/babel">
+
+    function TShirt(props) {
+      const shirt = props.shirt;
+
+      const [stock, setStock] = React.useState(shirt.stock);
+      const [quantity, setQuantity] = React.useState(1);
+
+      function quantityHandler(e) {
+        setQuantity(Number(e.target.value));
+      }
+
+      function buyHandler() {
+        if (quantity > 0 && quantity <= stock) {
+          setStock(stock - quantity);
+          setQuantity(1);
+        }
+      }
+
+      const options = [];
+
+      for (let i = 1; i <= stock; i++) {
+        options.push(
+          <option key={i} value={i}>{i}</option>
+        );
+      }
+
+      return (
+        <div>
+          <h2>{shirt.title}</h2>
+
+          <img
+            src={'images/' + shirt.image}
+            alt={shirt.title}
+            width="200"
+          />
+
+          <p>Price: ${shirt.price.toFixed(2)}</p>
+          <p>Stock: {stock}</p>
+
+          {stock > 0 ? (
+            <div>
+              <select value={quantity} onChange={quantityHandler}>
+                {options}
+              </select>
+
+              <button onClick={buyHandler}>Buy</button>
+            </div>
+          ) : (
+            <p>Out of Stock</p>
+          )}
+
+          <hr />
+        </div>
+      );
+    }
+
+    function App() {
+      return (
+        <div>
+          {tshirts.map((shirt, index) => (
+            <TShirt key={index} shirt={shirt} />
+          ))}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(
+      document.getElementById('root')
+    );
+
+    root.render(<App />);
+
+  </script>
 </body>
 </html>
